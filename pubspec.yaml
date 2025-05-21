@@ -1,0 +1,70 @@
+name: transporte_uci_checking
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+
+ #STATES MANAGEMENT
+  flutter_riverpod: ^2.3.6
+  hooks_riverpod: ^2.3.7
+  flutter_hooks: ^0.20.5
+
+  #ROUTER
+  go_router: ^14.7.1
+
+  #IMAGES
+  image_picker: ^1.0.1
+  extended_image: ^9.1.0
+  cached_network_image: ^3.2.3
+
+  # NETWORK
+  connectivity_plus: ^6.0.3
+  dart_ping: ^9.0.1
+  dio: ^5.3.0
+
+  # UI UTILITY
+  animate_do: ^3.3.3
+
+  # UTILS
+  shared_preferences: ^2.2.0
+  formz: ^0.8.0
+  flutter_otp_text_field: ^1.1.3+2
+  flutter_launcher_icons: ^0.14.3
+  auto_size_text: ^3.0.0
+
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  flutter_svg: ^2.0.17
+  gif: ^2.3.0
+  flutter_local_notifications: ^18.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  generate: true # Add this line
+  uses-material-design: true
+
+
+  assets:
+    - assets/
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/ic_launcher.png"
+  image_path_ios: "assets/ic_launcher.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+flutter_intl:
+  enabled: true
