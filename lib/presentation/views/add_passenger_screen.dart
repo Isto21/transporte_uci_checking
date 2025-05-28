@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transporte_uci_checking/config/constants/consts.dart';
+import 'package:transporte_uci_checking/domain/entities/user.dart';
+import 'package:transporte_uci_checking/presentation/providers/trips/passenger_providers.dart';
 
 class AddPassengerScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -47,7 +49,15 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
           backgroundColor: Colors.green,
         ),
       );
-
+      ref
+          .read(passnegerProvider.notifier)
+          .addPassenger(
+            UserEnity(
+              email: _emailController.text,
+              name: _nameController.text,
+              lastName: _lastNameController.text,
+            ),
+          );
       // Volver a la pantalla anterior después de un breve retraso
       Future.delayed(const Duration(seconds: 1), () {
         Navigator.pop(context);

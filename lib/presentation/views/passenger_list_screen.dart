@@ -51,185 +51,142 @@ class PassengerListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final passengersAsync = ref.watch(userEnitysProvider(tripId));
+    final passengersAsync = ref.watch(passnegerProvider);
     final selectedPassengers = ref.watch(selectedUserEnitysProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mis Viajes')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Lista de pasajeros',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.qr_code,
-                        color: ApkConstants.primaryApkColor,
+    if (passengersAsync.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Mis Viajes')),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Lista de pasajeros',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.qr_code,
+                          color: ApkConstants.primaryApkColor,
+                        ),
+                        onPressed: () {
+                          context.push(RouterPath.qrScannerPage);
+                        },
                       ),
-                      onPressed: () {
-                        context.push(RouterPath.qrScannerPage);
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.search,
-                        color: ApkConstants.primaryApkColor,
+                      IconButton(
+                        icon: const Icon(
+                          Icons.search,
+                          color: ApkConstants.primaryApkColor,
+                        ),
+                        onPressed: () {
+                          // Obtener los pasajeros actuales o usar datos falsos si hay error
+                          final List<UserEnity> passengers =
+                              passengersAsync.passengers!;
+
+                          // Mostrar el SearchDelegate
+                          showSearch(
+                            context: context,
+                            delegate: PassengerSearchDelegate(
+                              passengers: passengers,
+                              onPassengerSelected: (passenger) {
+                                // Opcional: hacer algo cuando se selecciona un pasajero
+                              },
+                            ),
+                          );
+                        },
                       ),
-                      onPressed: () {
-                        // Obtener los pasajeros actuales o usar datos falsos si hay error
-                        final List<UserEnity> passengers = passengersAsync.when(
-                          data: (data) => data,
-                          loading: () => [],
-                          error: (_, __) => fakePassengers,
-                        );
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      AddPassengerScreen(tripId: tripId),
+                            ),
+                          );
+                        },
 
-                        // Mostrar el SearchDelegate
-                        showSearch(
-                          context: context,
-                          delegate: PassengerSearchDelegate(
-                            passengers: passengers,
-                            onPassengerSelected: (passenger) {
-                              // Opcional: hacer algo cuando se selecciona un pasajero
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => AddPassengerScreen(tripId: tripId),
-                          ),
-                        );
-                      },
-
-                      icon: const Icon(
-                        Icons.add,
-                        color: ApkConstants.primaryApkColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: passengersAsync.when(
-              data: (passengers) {
-                return ListView.builder(
-                  itemCount: passengers.length,
-                  itemBuilder: (context, index) {
-                    final passenger = passengers[index];
-                    final isSelected = selectedPassengers.any(
-                      (p) => p.name == passenger.name,
-                    );
-
-                    return CheckboxListTile(
-                      title: Text(passenger.name ?? ''),
-                      value: isSelected,
-                      onChanged: (bool? value) {
-                        if (value == true) {
-                          ref
-                              .read(selectedUserEnitysProvider.notifier)
-                              .state = [...selectedPassengers, passenger];
-                        } else {
-                          ref.read(selectedUserEnitysProvider.notifier).state =
-                              selectedPassengers
-                                  .where((p) => p.name != passenger.name)
-                                  .toList();
-                        }
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                      ),
-                    );
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) {
-                // Datos falsos para mostrar en caso de error
-
-                return ListView.builder(
-                  itemCount: fakePassengers.length,
-                  itemBuilder: (context, index) {
-                    final passenger = fakePassengers[index];
-                    final isSelected = selectedPassengers.any(
-                      (p) => p.name == passenger.name,
-                    );
-
-                    return CheckboxListTile(
-                      title: Text(
-                        passenger.name ?? '',
-                        style: TextStyle(
-                          decoration:
-                              (isSelected) ? TextDecoration.lineThrough : null,
+                        icon: const Icon(
+                          Icons.add,
+                          color: ApkConstants.primaryApkColor,
                         ),
                       ),
-                      value: isSelected,
-                      onChanged: (bool? value) {
-                        if (value == true) {
-                          ref
-                              .read(selectedUserEnitysProvider.notifier)
-                              .state = [...selectedPassengers, passenger];
-                        } else {
-                          ref.read(selectedUserEnitysProvider.notifier).state =
-                              selectedPassengers
-                                  .where((p) => p.name != passenger.name)
-                                  .toList();
-                        }
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () async {
-                  await loading(
-                    context: context,
-                    action: ref
-                        .read(tripProvider)
-                        .checkIn(
-                          tripId.toString(),
-                          selectedPassengers
-                              .map((toElement) => toElement.id.toString())
-                              .toList(),
-                        ),
-                  );
-                  SnackBarGI.showOriginal(
-                    context,
-                    text: S.of(context).tripClosedSuccessfully,
-                  );
-                  Navigator.pop(context);
-                },
-                child: Text(S.of(context).closeTrip),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            Expanded(
+              child: ListView.builder(
+                itemCount: passengersAsync.passengers?.length,
+                itemBuilder: (context, index) {
+                  final passenger = passengersAsync.passengers?[index];
+                  final isSelected = selectedPassengers.any(
+                    (p) => p.name == passenger?.name,
+                  );
+
+                  return CheckboxListTile(
+                    title: Text(passenger?.name ?? ''),
+                    value: isSelected,
+                    onChanged: (bool? value) {
+                      if (value == true) {
+                        ref.read(selectedUserEnitysProvider.notifier).state = [
+                          ...selectedPassengers,
+                          passenger!,
+                        ];
+                      } else {
+                        ref.read(selectedUserEnitysProvider.notifier).state =
+                            selectedPassengers
+                                .where((p) => p.name != passenger?.name)
+                                .toList();
+                      }
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
+              child: SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () async {
+                    await loading(
+                      context: context,
+                      action: ref
+                          .read(tripProvider)
+                          .checkIn(
+                            tripId.toString(),
+                            selectedPassengers
+                                .map((toElement) => toElement.id.toString())
+                                .toList(),
+                          ),
+                    );
+                    SnackBarGI.showOriginal(
+                      context,
+                      text: S.of(context).tripClosedSuccessfully,
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: Text(S.of(context).closeTrip),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
