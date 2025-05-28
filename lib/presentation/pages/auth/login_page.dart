@@ -12,6 +12,8 @@ import 'package:transporte_uci_checking/data/shared_preferences/shared_prefs.dar
 import 'package:transporte_uci_checking/generated/l10n.dart';
 import 'package:transporte_uci_checking/presentation/providers/auth/account_code_verification_provider.riverpod.dart';
 import 'package:transporte_uci_checking/presentation/providers/auth/account_form_login_provider.riverpod.dart';
+import 'package:transporte_uci_checking/presentation/providers/trips/passenger_providers.dart';
+import 'package:transporte_uci_checking/presentation/providers/trips/trip_providers.dart';
 
 class LoginPage extends HookConsumerWidget {
   final Debounce _emailDebounce = Debounce(milliseconds: 800);
@@ -69,6 +71,8 @@ class LoginPage extends HookConsumerWidget {
             );
         }
       } else {
+        ref.invalidate(passnegerProvider);
+        ref.invalidate(tripProvider);
         context.go(RouterPath.HomePage);
         Prefs.instance.saveValue(
           ConstantsSharedPrefs.mark,

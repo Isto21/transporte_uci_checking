@@ -52,6 +52,8 @@ class PassengerListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final passengersAsync = ref.watch(passnegerProvider);
+    final added =
+        passengersAsync.passengers?.where((test) => test.role == null).toList();
     final selectedPassengers = ref.watch(selectedUserEnitysProvider);
     if (passengersAsync.isLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -126,7 +128,11 @@ class PassengerListScreen extends ConsumerWidget {
             ),
             Expanded(
               child: ListView.builder(
-                itemCount: passengersAsync.passengers?.length,
+                shrinkWrap: true,
+                itemCount:
+                    passengersAsync.passengers
+                        ?.where((test) => test.role != null)
+                        .length,
                 itemBuilder: (context, index) {
                   final passenger = passengersAsync.passengers?[index];
                   final isSelected = selectedPassengers.any(
@@ -134,7 +140,63 @@ class PassengerListScreen extends ConsumerWidget {
                   );
 
                   return CheckboxListTile(
-                    title: Text(passenger?.name ?? ''),
+                    title: Text(
+                      "${passenger?.name ?? ''} ${passenger?.lastName ?? ""}",
+                      style: TextStyle(
+                        decoration:
+                            isSelected ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
+                    value: isSelected,
+                    onChanged: (bool? value) {
+                      if (value == true) {
+                        ref.read(selectedUserEnitysProvider.notifier).state = [
+                          ...selectedPassengers,
+                          passenger!,
+                        ];
+                      } else {
+                        ref.read(selectedUserEnitysProvider.notifier).state =
+                            selectedPassengers
+                                .where((p) => p.name != passenger?.name)
+                                .toList();
+                      }
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                SizedBox(width: 16),
+                Text(
+                  "Añadidos",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: added?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final passenger = added?[index];
+                  final isSelected = selectedPassengers.any(
+                    (p) => p.name == passenger?.name,
+                  );
+
+                  return CheckboxListTile(
+                    title: Text(
+                      "${passenger?.name ?? ''} ${passenger?.lastName ?? ""}",
+                      style: TextStyle(
+                        decoration:
+                            isSelected ? TextDecoration.lineThrough : null,
+                      ),
+                    ),
                     value: isSelected,
                     onChanged: (bool? value) {
                       if (value == true) {
