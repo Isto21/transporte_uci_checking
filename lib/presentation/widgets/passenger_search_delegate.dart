@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:transporte_uci_checking/data/datasources/models/passenger.module.dart';
+import 'package:transporte_uci_checking/domain/entities/user.dart';
 
-class PassengerSearchDelegate extends SearchDelegate<Passenger?> {
-  final List<Passenger> passengers;
-  final Function(Passenger)? onPassengerSelected;
+class PassengerSearchDelegate extends SearchDelegate<UserEnity?> {
+  final List<UserEnity> passengers;
+  final Function(UserEnity)? onPassengerSelected;
 
   PassengerSearchDelegate({required this.passengers, this.onPassengerSelected});
 
@@ -68,10 +68,10 @@ class PassengerSearchDelegate extends SearchDelegate<Passenger?> {
   }
 
   // Método para filtrar pasajeros basados en la consulta
-  List<Passenger> _filterPassengers() {
+  List<UserEnity> _filterPassengers() {
     final lowercaseQuery = query.toLowerCase();
     return passengers.where((passenger) {
-      return passenger.name.toLowerCase().contains(lowercaseQuery);
+      return passenger.name?.toLowerCase().contains(lowercaseQuery) ?? false;
     }).toList();
   }
 
@@ -123,9 +123,9 @@ class PassengerSearchDelegate extends SearchDelegate<Passenger?> {
               final passenger = suggestedPassengers[index];
               return ListTile(
                 leading: const CircleAvatar(child: Icon(Icons.person)),
-                title: Text(passenger.name),
+                title: Text(passenger.name ?? ''),
                 onTap: () {
-                  query = passenger.name;
+                  query = passenger.name ?? '';
                   showResults(context);
                   if (onPassengerSelected != null) {
                     onPassengerSelected!(passenger);
@@ -140,7 +140,7 @@ class PassengerSearchDelegate extends SearchDelegate<Passenger?> {
   }
 
   // Widget para mostrar resultados de búsqueda
-  Widget _buildSearchResults(List<Passenger> results) {
+  Widget _buildSearchResults(List<UserEnity> results) {
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (context, index) {
@@ -148,7 +148,7 @@ class PassengerSearchDelegate extends SearchDelegate<Passenger?> {
         return ListTile(
           leading: const CircleAvatar(child: Icon(Icons.person)),
           title: Text(
-            passenger.name,
+            passenger.name ?? '',
             style: const TextStyle(fontWeight: FontWeight.w500),
           ),
           onTap: () {

@@ -1,68 +1,61 @@
-import 'package:transporte_uci_checking/data/datasources/models/enums/trip_status_enum.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:transporte_uci_checking/data/datasources/models/request.module.dart';
 
 class Trip {
   final int? id;
-  final String date;
-  final String departureTime;
-  final String returnTime;
-  final TripStatusEnum status;
+  final int? transportationId;
+  final String? date;
+  final String? departureTime;
+  final String? returnTime;
   final List<Request>? requests;
-
   Trip({
     this.id,
-    required this.date,
-    required this.departureTime,
-    required this.returnTime,
-    this.status = TripStatusEnum.READY,
+    this.transportationId,
+    this.date,
+    this.departureTime,
+    this.returnTime,
     this.requests,
   });
+  // final TripStatusEnum status;
 
-  factory Trip.fromJson(Map<String, dynamic> json) {
-    List<Request>? requestList;
-    if (json['requests'] != null) {
-      requestList =
-          (json['requests'] as List)
-              .map((request) => Request.fromJson(request))
-              .toList();
-    }
-
-    return Trip(
-      id: json['id'],
-      date: json['date'],
-      departureTime: json['departureTime'],
-      returnTime: json['returnTime'],
-      status: TripStatusEnumExtension.fromString(json['status']),
-      requests: requestList,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'id': id,
+      'transportationId': transportationId,
       'date': date,
       'departureTime': departureTime,
       'returnTime': returnTime,
-      'status': status.value,
-      'requests': requests?.map((request) => request.toJson()).toList(),
+      'requests': requests?.map((x) => x.toMap()).toList(),
     };
   }
 
-  Trip copyWith({
-    int? id,
-    String? date,
-    String? departureTime,
-    String? returnTime,
-    TripStatusEnum? status,
-    List<Request>? requests,
-  }) {
+  factory Trip.fromMap(Map<String, dynamic> map) {
     return Trip(
-      id: id ?? this.id,
-      date: date ?? this.date,
-      departureTime: departureTime ?? this.departureTime,
-      returnTime: returnTime ?? this.returnTime,
-      status: status ?? this.status,
-      requests: requests ?? this.requests,
+      id: map['id'] != null ? map['id'] as int : null,
+      transportationId:
+          map['transportationId'] != null
+              ? map['transportationId'] as int
+              : null,
+      date: map['date'] != null ? map['date'] as String : null,
+      departureTime:
+          map['departureTime'] != null ? map['departureTime'] as String : null,
+      returnTime:
+          map['returnTime'] != null ? map['returnTime'] as String : null,
+      requests:
+          map['requests'] != null
+              ? List<Request>.from(
+                (map['requests'] as List<dynamic>).map<Request?>(
+                  (x) => Request.fromMap(x as Map<String, dynamic>),
+                ),
+              )
+              : null,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Trip.fromJson(String source) =>
+      Trip.fromMap(json.decode(source) as Map<String, dynamic>);
 }

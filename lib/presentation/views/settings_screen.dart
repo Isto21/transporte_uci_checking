@@ -44,7 +44,7 @@ class SettingsScreen extends StatelessWidget {
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: () async {
                 await showTransitionDialogue(
                   CustomAlertDialog(
@@ -68,12 +68,7 @@ class SettingsScreen extends StatelessWidget {
                   context,
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-              child: const Text('Cerrar sesión'),
+              child: Text(S.of(context).Sign_Off),
             ),
           ),
           const SizedBox(height: 32),
@@ -93,7 +88,7 @@ class SettingsScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: ApkConstants.primaryApkColor,
             ),
           ),
         ),
@@ -110,7 +105,7 @@ class SettingsScreen extends StatelessWidget {
     VoidCallback onTap,
   ) {
     return ListTile(
-      leading: Icon(icon, color: Colors.blue),
+      leading: Icon(icon, color: ApkConstants.primaryApkColor),
       title: Text(title),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,

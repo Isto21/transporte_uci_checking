@@ -8,6 +8,7 @@ import 'package:transporte_uci_checking/presentation/pages/auth/verification_cod
 import 'package:transporte_uci_checking/presentation/pages/pages.dart';
 import 'package:transporte_uci_checking/presentation/pages/settings/change_password_page.dart';
 import 'package:transporte_uci_checking/presentation/pages/settings/language_page.dart';
+import 'package:transporte_uci_checking/presentation/views/qr_page.dart';
 
 import 'router_path.dart';
 import 'router_transition.dart';
@@ -60,6 +61,14 @@ final routerProvider = StateProvider<GoRouter>((ref) {
             (context, state) => RouterTransition.fadeTransitionPage(
               key: state.pageKey,
               child: const VerificationCodePage(),
+            ),
+      ),
+      GoRoute(
+        path: RouterPath.qrScannerPage,
+        pageBuilder:
+            (context, state) => RouterTransition.fadeTransitionPage(
+              key: state.pageKey,
+              child: const QRViewExample(),
             ),
       ),
       GoRoute(

@@ -1,43 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:transporte_uci_checking/config/constants/consts.dart';
 import 'package:transporte_uci_checking/config/helpers/snackbar_gi.dart';
 import 'package:transporte_uci_checking/config/helpers/utils.dart';
-import 'package:transporte_uci_checking/data/datasources/models/passenger.module.dart';
+import 'package:transporte_uci_checking/config/router/router_path.dart';
+import 'package:transporte_uci_checking/domain/entities/user.dart';
 import 'package:transporte_uci_checking/generated/l10n.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/passenger_providers.dart';
+import 'package:transporte_uci_checking/presentation/providers/trips/trip_providers.dart';
 import 'package:transporte_uci_checking/presentation/views/add_passenger_screen.dart';
 import 'package:transporte_uci_checking/presentation/widgets/passenger_search_delegate.dart';
 
-final List<Passenger> fakePassengers = [
-  Passenger(name: 'Fabian Rosales'),
-  Passenger(name: 'Alexis Garcia'),
-  Passenger(name: 'Fidel Legra'),
-  Passenger(name: 'Luis Tomas Lezcano'),
-  Passenger(name: 'Alexander Abreu'),
-  Passenger(name: 'Juan Dominguez'),
-  Passenger(name: 'Eleanor Pena'),
-  Passenger(name: 'Kristin Watson'),
-  Passenger(name: 'Courtney Henry'),
-  Passenger(name: 'Leslie Alexander'),
-  Passenger(name: 'Jenny Wilson'),
-  Passenger(name: 'Guy Hawkins'),
-  Passenger(name: 'Albert Flores'),
-  Passenger(name: 'Kathryn Murphy'),
-  Passenger(name: 'Brooklyn Simmons'),
-  Passenger(name: 'Jerome Bell'),
-  Passenger(name: 'Dianne Russell'),
-  Passenger(name: 'Cameron Williamson'),
-  Passenger(name: 'Jacob Jones'),
-  Passenger(name: 'Esther Howard'),
-  Passenger(name: 'Ralph Edwards'),
-  Passenger(name: 'Arlene McCoy'),
-  Passenger(name: 'Savannah Nguyen'),
-  Passenger(name: 'Darrell Steward'),
-  Passenger(name: 'Bessie Cooper'),
-  Passenger(name: 'Wade Warren'),
-  Passenger(name: 'Floyd Miles'),
-  Passenger(name: 'Theresa Webb'),
-  Passenger(name: 'Robert Fox'),
+final List<UserEnity> fakePassengers = [
+  UserEnity(name: 'Fabian Rosales'),
+  UserEnity(name: 'Alexis Garcia'),
+  UserEnity(name: 'Fidel Legra'),
+  UserEnity(name: 'Luis Tomas Lezcano'),
+  UserEnity(name: 'Alexander Abreu'),
+  UserEnity(name: 'Juan Dominguez'),
+  UserEnity(name: 'Eleanor Pena'),
+  UserEnity(name: 'Kristin Watson'),
+  UserEnity(name: 'Courtney Henry'),
+  UserEnity(name: 'Leslie Alexander'),
+  UserEnity(name: 'Jenny Wilson'),
+  UserEnity(name: 'Guy Hawkins'),
+  UserEnity(name: 'Albert Flores'),
+  UserEnity(name: 'Kathryn Murphy'),
+  UserEnity(name: 'Brooklyn Simmons'),
+  UserEnity(name: 'Jerome Bell'),
+  UserEnity(name: 'Dianne Russell'),
+  UserEnity(name: 'Cameron Williamson'),
+  UserEnity(name: 'Jacob Jones'),
+  UserEnity(name: 'Esther Howard'),
+  UserEnity(name: 'Ralph Edwards'),
+  UserEnity(name: 'Arlene McCoy'),
+  UserEnity(name: 'Savannah Nguyen'),
+  UserEnity(name: 'Darrell Steward'),
+  UserEnity(name: 'Bessie Cooper'),
+  UserEnity(name: 'Wade Warren'),
+  UserEnity(name: 'Floyd Miles'),
+  UserEnity(name: 'Theresa Webb'),
+  UserEnity(name: 'Robert Fox'),
 ];
 
 class PassengerListScreen extends ConsumerWidget {
@@ -47,8 +51,8 @@ class PassengerListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final passengersAsync = ref.watch(passengersProvider(tripId));
-    final selectedPassengers = ref.watch(selectedPassengersProvider);
+    final passengersAsync = ref.watch(userEnitysProvider(tripId));
+    final selectedPassengers = ref.watch(selectedUserEnitysProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mis Viajes')),
@@ -66,14 +70,22 @@ class PassengerListScreen extends ConsumerWidget {
                 Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.qr_code, color: Colors.blue),
-                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.qr_code,
+                        color: ApkConstants.primaryApkColor,
+                      ),
+                      onPressed: () {
+                        context.push(RouterPath.qrScannerPage);
+                      },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.search, color: Colors.blue),
+                      icon: const Icon(
+                        Icons.search,
+                        color: ApkConstants.primaryApkColor,
+                      ),
                       onPressed: () {
                         // Obtener los pasajeros actuales o usar datos falsos si hay error
-                        final List<Passenger> passengers = passengersAsync.when(
+                        final List<UserEnity> passengers = passengersAsync.when(
                           data: (data) => data,
                           loading: () => [],
                           error: (_, __) => fakePassengers,
@@ -102,7 +114,10 @@ class PassengerListScreen extends ConsumerWidget {
                         );
                       },
 
-                      icon: const Icon(Icons.add, color: Colors.blue),
+                      icon: const Icon(
+                        Icons.add,
+                        color: ApkConstants.primaryApkColor,
+                      ),
                     ),
                   ],
                 ),
@@ -121,15 +136,15 @@ class PassengerListScreen extends ConsumerWidget {
                     );
 
                     return CheckboxListTile(
-                      title: Text(passenger.name),
+                      title: Text(passenger.name ?? ''),
                       value: isSelected,
                       onChanged: (bool? value) {
                         if (value == true) {
                           ref
-                              .read(selectedPassengersProvider.notifier)
+                              .read(selectedUserEnitysProvider.notifier)
                               .state = [...selectedPassengers, passenger];
                         } else {
-                          ref.read(selectedPassengersProvider.notifier).state =
+                          ref.read(selectedUserEnitysProvider.notifier).state =
                               selectedPassengers
                                   .where((p) => p.name != passenger.name)
                                   .toList();
@@ -156,15 +171,21 @@ class PassengerListScreen extends ConsumerWidget {
                     );
 
                     return CheckboxListTile(
-                      title: Text(passenger.name),
+                      title: Text(
+                        passenger.name ?? '',
+                        style: TextStyle(
+                          decoration:
+                              (isSelected) ? TextDecoration.lineThrough : null,
+                        ),
+                      ),
                       value: isSelected,
                       onChanged: (bool? value) {
                         if (value == true) {
                           ref
-                              .read(selectedPassengersProvider.notifier)
+                              .read(selectedUserEnitysProvider.notifier)
                               .state = [...selectedPassengers, passenger];
                         } else {
-                          ref.read(selectedPassengersProvider.notifier).state =
+                          ref.read(selectedUserEnitysProvider.notifier).state =
                               selectedPassengers
                                   .where((p) => p.name != passenger.name)
                                   .toList();
@@ -185,17 +206,23 @@ class PassengerListScreen extends ConsumerWidget {
             child: SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () {
-                  loading(
+                onPressed: () async {
+                  await loading(
                     context: context,
-                    action: Future.delayed(const Duration(seconds: 3), () {
-                      SnackBarGI.showOriginal(
-                        context,
-                        text: S.of(context).tripClosedSuccessfully,
-                      );
-                      Navigator.pop(context);
-                    }),
+                    action: ref
+                        .read(tripProvider)
+                        .checkIn(
+                          tripId.toString(),
+                          selectedPassengers
+                              .map((toElement) => toElement.id.toString())
+                              .toList(),
+                        ),
                   );
+                  SnackBarGI.showOriginal(
+                    context,
+                    text: S.of(context).tripClosedSuccessfully,
+                  );
+                  Navigator.pop(context);
                 },
                 child: Text(S.of(context).closeTrip),
               ),

@@ -1,5 +1,5 @@
-import 'package:transporte_uci_checking/data/datasources/models/client.module.dart';
-import 'package:transporte_uci_checking/data/datasources/models/request.module.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
 class Address {
   final int? id;
@@ -7,69 +7,41 @@ class Address {
   final String street;
   final String number;
   final String municipality;
-  final ClientModel? client;
-  final List<Request>? requests;
-
+  final String? clientId;
   Address({
     this.id,
     required this.coordinates,
     required this.street,
     required this.number,
     required this.municipality,
-    this.client,
-    this.requests,
+    this.clientId,
   });
+  // final List<Request>? requests;
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    List<Request>? requestList;
-    if (json['requests'] != null) {
-      requestList =
-          (json['requests'] as List)
-              .map((request) => Request.fromJson(request))
-              .toList();
-    }
-
-    return Address(
-      id: json['id'],
-      coordinates: json['coordinates'],
-      street: json['street'],
-      number: json['number'],
-      municipality: json['municipality'],
-      client:
-          json['client'] != null ? ClientModel.fromJson(json['client']) : null,
-      requests: requestList,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'id': id,
       'coordinates': coordinates,
       'street': street,
       'number': number,
       'municipality': municipality,
-      'client': client?.toJson(),
-      'requests': requests?.map((request) => request.toJson()).toList(),
+      'clientId': clientId,
     };
   }
 
-  Address copyWith({
-    int? id,
-    String? coordinates,
-    String? street,
-    String? number,
-    String? municipality,
-    ClientModel? client,
-    List<Request>? requests,
-  }) {
+  factory Address.fromMap(Map<String, dynamic> map) {
     return Address(
-      id: id ?? this.id,
-      coordinates: coordinates ?? this.coordinates,
-      street: street ?? this.street,
-      number: number ?? this.number,
-      municipality: municipality ?? this.municipality,
-      client: client ?? this.client,
-      requests: requests ?? this.requests,
+      id: map['id'] != null ? map['id'] as int : null,
+      coordinates: map['coordinates'] as String,
+      street: map['street'] as String,
+      number: map['number'] as String,
+      municipality: map['municipality'] as String,
+      clientId: map['clientId'] != null ? map['clientId'] as String : null,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Address.fromJson(String source) =>
+      Address.fromMap(json.decode(source) as Map<String, dynamic>);
 }

@@ -1,7 +1,7 @@
 name: transporte_uci_checking
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: ^3.7.0
@@ -44,6 +44,7 @@ dependencies:
   flutter_svg: ^2.0.17
   gif: ^2.3.0
   flutter_local_notifications: ^18.0.1
+  qr_code_scanner_plus: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:

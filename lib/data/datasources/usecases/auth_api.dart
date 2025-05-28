@@ -45,7 +45,7 @@ class AuthApi extends AuthRemoteRepository {
         path: '$path/users/me',
       );
       final ClientEntity user = Mappers().clientMapperToEntity(
-        ClientModel.fromJson(json),
+        ClientModel.fromMap(json),
       );
       return user;
     } on CustomDioError catch (_) {
@@ -72,21 +72,5 @@ class AuthApi extends AuthRemoteRepository {
     } catch (e) {
       throw CustomDioError(code: 400);
     }
-  }
-
-  @override
-  Future forgotPassword({required String email}) {
-    // TODO: implement forgotPassword
-    throw UnimplementedError();
-  }
-
-  @override
-  Future verifyForgotPassword({
-    required String email,
-    required String verification_code,
-    required String new_password,
-  }) {
-    // TODO: implement verifyForgotPassword
-    throw UnimplementedError();
   }
 }

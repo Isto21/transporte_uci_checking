@@ -1,4 +1,5 @@
-import 'package:transporte_uci_checking/data/datasources/models/enums/transport_status_enum.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
 class Transport {
   final int? id;
@@ -9,8 +10,8 @@ class Transport {
   final String? color;
   final String type;
   final String brand;
-  final TransportStatusEnum status;
-  final String? photo;
+  // final TransportStatusEnum status;
+  // final String? photo;
 
   Transport({
     this.id,
@@ -21,27 +22,12 @@ class Transport {
     this.color,
     required this.type,
     required this.brand,
-    this.status = TransportStatusEnum.GOOD,
-    this.photo,
+    // this.status = TransportStatusEnum.GOOD,
+    // this.photo,
   });
 
-  factory Transport.fromJson(Map<String, dynamic> json) {
-    return Transport(
-      id: json['id'],
-      registration: json['registration'],
-      driverName: json['driverName'],
-      driverPhone: json['driverPhone'],
-      capacity: json['capacity'],
-      color: json['color'],
-      type: json['type'],
-      brand: json['brand'],
-      status: TransportStatusEnumExtension.fromString(json['status']),
-      photo: json['photo'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'id': id,
       'registration': registration,
       'driverName': driverName,
@@ -50,34 +36,25 @@ class Transport {
       'color': color,
       'type': type,
       'brand': brand,
-      'status': status.value,
-      'photo': photo,
     };
   }
 
-  Transport copyWith({
-    int? id,
-    String? registration,
-    String? driverName,
-    String? driverPhone,
-    int? capacity,
-    String? color,
-    String? type,
-    String? brand,
-    TransportStatusEnum? status,
-    String? photo,
-  }) {
+  factory Transport.fromMap(Map<String, dynamic> map) {
     return Transport(
-      id: id ?? this.id,
-      registration: registration ?? this.registration,
-      driverName: driverName ?? this.driverName,
-      driverPhone: driverPhone ?? this.driverPhone,
-      capacity: capacity ?? this.capacity,
-      color: color ?? this.color,
-      type: type ?? this.type,
-      brand: brand ?? this.brand,
-      status: status ?? this.status,
-      photo: photo ?? this.photo,
+      id: map['id'] != null ? map['id'] as int : null,
+      registration: map['registration'] as String,
+      driverName: map['driverName'] as String,
+      driverPhone:
+          map['driverPhone'] != null ? map['driverPhone'] as String : null,
+      capacity: map['capacity'] as int,
+      color: map['color'] != null ? map['color'] as String : null,
+      type: map['type'] as String,
+      brand: map['brand'] as String,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Transport.fromJson(String source) =>
+      Transport.fromMap(json.decode(source) as Map<String, dynamic>);
 }

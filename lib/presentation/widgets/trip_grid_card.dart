@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:transporte_uci_checking/data/datasources/models/trip.module.dart';
+import 'package:transporte_uci_checking/config/constants/consts.dart';
+import 'package:transporte_uci_checking/domain/entities/trip.dart';
 
 class TripGridCard extends StatelessWidget {
-  final Trip trip;
+  final TripEntity trip;
 
   const TripGridCard({super.key, required this.trip});
 
@@ -10,7 +11,7 @@ class TripGridCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.blue.shade200),
+        border: Border.all(color: ApkConstants.primaryApkColor),
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
@@ -23,13 +24,16 @@ class TripGridCard extends StatelessWidget {
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              color: ApkConstants.primaryApkColor,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             'Hora: ${trip.departureTime}',
-            style: const TextStyle(fontSize: 14, color: Colors.blue),
+            style: const TextStyle(
+              fontSize: 14,
+              color: ApkConstants.primaryApkColor,
+            ),
           ),
         ],
       ),

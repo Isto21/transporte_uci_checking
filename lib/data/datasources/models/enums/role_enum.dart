@@ -1,8 +1,4 @@
-enum RoleEnum {
-  DIRECTOR_CENTRO,
-  ADMIN,
-  SUPER_ADMIN,
-}
+enum RoleEnum { DIRECTOR_CENTRO, ADMIN, SUPER_ADMIN }
 
 extension RoleEnumExtension on RoleEnum {
   String get value {

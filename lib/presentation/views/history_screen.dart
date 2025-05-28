@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:transporte_uci_checking/data/datasources/models/trip.module.dart';
+import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/trip_providers.dart';
 import 'package:transporte_uci_checking/presentation/widgets/expandable_trip_card.dart';
 
@@ -16,10 +16,10 @@ class HistoryScreen extends ConsumerWidget {
       body: historicalTripsAsync.when(
         data: (trips) {
           // Agrupar viajes por fecha
-          final Map<String, List<Trip>> tripsByDate = {};
+          final Map<String, List<TripEntity>> tripsByDate = {};
           for (final trip in trips) {
             if (!tripsByDate.containsKey(trip.date)) {
-              tripsByDate[trip.date] = [];
+              tripsByDate[trip.date!] = [];
             }
             tripsByDate[trip.date]!.add(trip);
           }
@@ -38,7 +38,7 @@ class HistoryScreen extends ConsumerWidget {
                   right: 16.0,
                 ),
                 child: Text(
-                  date,
+                  "${DateTime.fromMillisecondsSinceEpoch(int.parse(date)).day}/${DateTime.fromMillisecondsSinceEpoch(int.parse(date)).month}/${DateTime.fromMillisecondsSinceEpoch(int.parse(date)).year}",
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -66,32 +66,32 @@ class HistoryScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) {
           // Datos falsos para mostrar en caso de error
-          final List<Trip> fakeTrips = [
-            Trip(
+          final List<TripEntity> fakeTrips = [
+            TripEntity(
               id: 101,
               date: '15/05/25',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 102,
               date: '15/05/25',
               departureTime: '10:30',
               returnTime: '16:30',
             ),
-            Trip(
+            TripEntity(
               id: 103,
               date: '14/05/25',
               departureTime: '9:15',
               returnTime: '15:15',
             ),
-            Trip(
+            TripEntity(
               id: 104,
               date: '14/05/25',
               departureTime: '14:00',
               returnTime: '20:00',
             ),
-            Trip(
+            TripEntity(
               id: 105,
               date: '13/05/25',
               departureTime: '8:00',
@@ -100,10 +100,10 @@ class HistoryScreen extends ConsumerWidget {
           ];
 
           // Agrupar viajes por fecha
-          final Map<String, List<Trip>> tripsByDate = {};
+          final Map<String, List<TripEntity>> tripsByDate = {};
           for (final trip in fakeTrips) {
             if (!tripsByDate.containsKey(trip.date)) {
-              tripsByDate[trip.date] = [];
+              tripsByDate[trip.date!] = [];
             }
             tripsByDate[trip.date]!.add(trip);
           }

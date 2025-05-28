@@ -44,19 +44,19 @@ class ForgotPasswordNotifier extends StateNotifier<ForgotPasswordStatus> {
     await Prefs.instance.saveValue(ConstantsSharedPrefs.username, '');
   }
 
-  Future<String> forgotPassword() async {
-    try {
-      state = state.copyWith(isValid: state.email.isValid);
-      final valid = validateEmail();
-      if (!valid) return ErrorsConsts.invalid_Form;
-      await _accountNotifier.accountRemoteRepository.forgotPassword(
-        email: state.email.value,
-      );
-      return ErrorsConsts.ok;
-    } on CustomDioError catch (e) {
-      return e.code.toString();
-    }
-  }
+  // Future<String> forgotPassword() async {
+  //   try {
+  //     state = state.copyWith(isValid: state.email.isValid);
+  //     final valid = validateEmail();
+  //     if (!valid) return ErrorsConsts.invalid_Form;
+  //     await _accountNotifier.accountRemoteRepository.forgotPassword(
+  //       email: state.email.value,
+  //     );
+  //     return ErrorsConsts.ok;
+  //   } on CustomDioError catch (e) {
+  //     return e.code.toString();
+  //   }
+  // }
 
   bool validateEmail() {
     return state.email.isValid;
@@ -109,26 +109,6 @@ class ForgotPasswordNotifier extends StateNotifier<ForgotPasswordStatus> {
       newPassword ?? state.newPassword,
       confirmNewPassword ?? state.confirmNewPassword,
     ]);
-  }
-
-  Future<String> changePassword() async {
-    try {
-      if (state.verificationCode == null) {
-        return ErrorsConsts.incorrect_verification_code;
-      }
-      // final String email = Prefs.instance.getValue(ConstantsSharedPrefs.email);.
-      if (matchPasswords()) {
-        return ErrorsConsts.invalid_Form;
-      }
-      await _accountNotifier.accountRemoteRepository.verifyForgotPassword(
-        new_password: state.newPassword.value,
-        email: state.email.value,
-        verification_code: state.verificationCode!,
-      );
-      return ErrorsConsts.ok;
-    } on CustomDioError catch (e) {
-      return e.code.toString();
-    }
   }
 
   bool matchPasswords() {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:transporte_uci_checking/data/datasources/models/trip.module.dart';
+import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/trip_providers.dart';
 import 'package:transporte_uci_checking/presentation/views/passenger_list_screen.dart';
 import 'package:transporte_uci_checking/presentation/widgets/trip_grid_card.dart';
@@ -17,10 +17,10 @@ class MyTripsScreen extends ConsumerWidget {
       body: tripsAsync.when(
         data: (trips) {
           // Agrupar viajes por fecha
-          final Map<String, List<Trip>> tripsByDate = {};
+          final Map<String, List<TripEntity>> tripsByDate = {};
           for (final trip in trips) {
             if (!tripsByDate.containsKey(trip.date)) {
-              tripsByDate[trip.date] = [];
+              tripsByDate[trip.date!] = [];
             }
             tripsByDate[trip.date]!.add(trip);
           }
@@ -33,7 +33,9 @@ class MyTripsScreen extends ConsumerWidget {
             itemCount: dateEntries.length,
             itemBuilder: (context, dateIndex) {
               final dateEntry = dateEntries[dateIndex];
-              final date = dateEntry.key;
+              final date = DateTime.fromMillisecondsSinceEpoch(
+                int.parse(dateEntry.key),
+              );
               final dateTrips = dateEntry.value;
 
               return Column(
@@ -42,7 +44,7 @@ class MyTripsScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                     child: Text(
-                      date,
+                      "${date.day}/${date.month}/${date.year}",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -123,44 +125,44 @@ class MyTripsScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) {
           // Datos falsos para mostrar en caso de error
-          final List<Trip> fakeTrips = [
-            Trip(
+          final List<TripEntity> fakeTrips = [
+            TripEntity(
               id: 1,
               date: '23/05/25',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 2,
               date: '23/05/25',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 3,
               date: '24/05/2025',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 4,
               date: '24/05/2025',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 5,
               date: '24/05/2025',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 6,
               date: '24/05/2025',
               departureTime: '8:00',
               returnTime: '14:00',
             ),
-            Trip(
+            TripEntity(
               id: 7,
               date: '24/05/2025',
               departureTime: '8:00',
@@ -169,10 +171,10 @@ class MyTripsScreen extends ConsumerWidget {
           ];
 
           // Agrupar viajes por fecha
-          final Map<String, List<Trip>> tripsByDate = {};
+          final Map<String, List<TripEntity>> tripsByDate = {};
           for (final trip in fakeTrips) {
             if (!tripsByDate.containsKey(trip.date)) {
-              tripsByDate[trip.date] = [];
+              tripsByDate[trip.date!] = [];
             }
             tripsByDate[trip.date]!.add(trip);
           }

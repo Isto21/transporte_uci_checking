@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:transporte_uci_checking/config/constants/consts.dart';
 
 class AddPassengerScreen extends ConsumerStatefulWidget {
   final int tripId;
@@ -21,7 +22,7 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
   final _emailController = TextEditingController();
 
   String _selectedGender = 'Masculino';
-  bool _isMinor = false;
+  String _selectCenter = 'CIGED';
   bool _hasSpecialNeeds = false;
   String _specialNeedsDescription = '';
 
@@ -70,7 +71,7 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  color: ApkConstants.primaryApkColor,
                 ),
               ),
               const SizedBox(height: 16),
@@ -129,6 +130,43 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
 
               // Género
               DropdownButtonFormField<String>(
+                value: _selectCenter,
+                decoration: const InputDecoration(
+                  labelText: 'Centro de producción',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.location_city_outlined),
+                ),
+                items:
+                    ['CIGED', 'CISOL', 'CIGE', 'FORTES', 'VERTEX', 'CESIM'].map(
+                      (gender) {
+                        return DropdownMenuItem(
+                          value: gender,
+                          child: Text(gender),
+                        );
+                      },
+                    ).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _selectCenter = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+
+              const Text(
+                'Información de Contacto',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: ApkConstants.primaryApkColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Género
+              DropdownButtonFormField<String>(
                 value: _selectedGender,
                 decoration: const InputDecoration(
                   labelText: 'Género',
@@ -150,33 +188,7 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
                   }
                 },
               ),
-              const SizedBox(height: 16),
 
-              // Es menor de edad
-              SwitchListTile(
-                title: const Text('Es menor de edad'),
-                value: _isMinor,
-                onChanged: (value) {
-                  setState(() {
-                    _isMinor = value;
-                  });
-                },
-                tileColor: Colors.grey.shade100,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Colors.grey.shade300),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              const Text(
-                'Información de Contacto',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
               const SizedBox(height: 16),
 
               // Teléfono
@@ -208,7 +220,7 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  color: ApkConstants.primaryApkColor,
                 ),
               ),
               const SizedBox(height: 16),
@@ -249,12 +261,8 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
               SizedBox(
                 width: double.infinity,
                 height: 50,
-                child: ElevatedButton(
+                child: FilledButton(
                   onPressed: _submitForm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
                   child: const Text(
                     'Añadir Pasajero',
                     style: TextStyle(fontSize: 16),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transporte_uci_checking/config/constants/consts.dart';
 import 'package:transporte_uci_checking/data/datasources/models/trip.module.dart';
 
 class TripCard extends StatelessWidget {
@@ -23,17 +24,23 @@ class TripCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+                    color: ApkConstants.primaryApkColor,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Hora: ${trip.departureTime}',
-                  style: const TextStyle(fontSize: 14, color: Colors.blue),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: ApkConstants.primaryApkColor,
+                  ),
                 ),
               ],
             ),
-            const Icon(Icons.keyboard_arrow_down, color: Colors.blue),
+            const Icon(
+              Icons.keyboard_arrow_down,
+              color: ApkConstants.primaryApkColor,
+            ),
           ],
         ),
       ),

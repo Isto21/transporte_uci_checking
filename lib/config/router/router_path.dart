@@ -19,4 +19,5 @@ class RouterPath {
   static const String MyCollectionPage = '/MyCollectionPage';
   static const String selectLanguagePage = '/selectLanguagePage';
   static const String settings = '/settings';
+  static const String qrScannerPage = '/qrScannerPage';
 }

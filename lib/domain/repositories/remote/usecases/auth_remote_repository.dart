@@ -15,11 +15,11 @@ abstract class AuthRemoteRepository {
     required String new_password,
   });
 
-  Future<dynamic> forgotPassword({required String email});
+  // Future<dynamic> forgotPassword({required String email});
 
-  Future<dynamic> verifyForgotPassword({
-    required String email,
-    required String verification_code,
-    required String new_password,
-  });
+  // Future<dynamic> verifyForgotPassword({
+  //   required String email,
+  //   required String verification_code,
+  //   required String new_password,
+  // });
 }

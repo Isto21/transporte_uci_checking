@@ -1,20 +1,19 @@
-import 'package:transporte_uci_checking/data/datasources/models/enums/trip_status_enum.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:transporte_uci_checking/domain/entities/request.dart';
 
 class TripEntity {
   final int? id;
-  final String date;
-  final String departureTime;
-  final String returnTime;
-  final TripStatusEnum status;
+  final int? transportationId;
+  final String? date;
+  final String? departureTime;
+  final String? returnTime;
   final List<RequestEntity>? requests;
-
   TripEntity({
     this.id,
-    required this.date,
-    required this.departureTime,
-    required this.returnTime,
-    this.status = TripStatusEnum.READY,
+    this.transportationId,
+    this.date,
+    this.departureTime,
+    this.returnTime,
     this.requests,
   });
 }

@@ -188,7 +188,9 @@ class LoginPage extends HookConsumerWidget {
                                   ),
                               child: Text(
                                 S.of(context).Forgot_Password,
-                                style: const TextStyle(color: Colors.blue),
+                                style: const TextStyle(
+                                  color: ApkConstants.primaryApkColor,
+                                ),
                               ),
                             ),
                           ],

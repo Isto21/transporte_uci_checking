@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:transporte_uci_checking/config/constants/consts.dart';
 import 'package:transporte_uci_checking/config/router/router_path.dart';
 import 'package:transporte_uci_checking/generated/l10n.dart';
 
@@ -222,9 +223,8 @@ class SingUpPage extends HookConsumerWidget {
                         onTap: () => context.go(RouterPath.LoginPage),
                         child: Text(
                           S.of(context).sign_in,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium!.copyWith(color: Colors.blue),
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(color: ApkConstants.primaryApkColor),
                         ),
                       ),
                     ],

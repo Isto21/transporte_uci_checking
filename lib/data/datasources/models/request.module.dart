@@ -1,92 +1,67 @@
-import 'package:transporte_uci_checking/data/datasources/models/address.module.dart';
-import 'package:transporte_uci_checking/data/datasources/models/enums/request_status_enum.dart';
-import 'package:transporte_uci_checking/data/datasources/models/trip.module.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
 class Request {
   final int? id;
-  final String areaYouRequest;
-  final String date;
+  final String? areaYouRequest;
+  final String? workers;
+  final String? addressId;
+  final String? date;
   final String? departureTime;
   final bool? isAoutbound;
   final String? returnTime;
   final bool? isInbound;
-  final int numberOfPeople;
-  final RequestStatusEnum status;
-  final Address? address;
-  final Trip? trip;
-
   Request({
     this.id,
-    required this.areaYouRequest,
-    required this.date,
+    this.areaYouRequest,
+    this.workers,
+    this.addressId,
+    this.date,
     this.departureTime,
     this.isAoutbound,
     this.returnTime,
     this.isInbound,
-    required this.numberOfPeople,
-    this.status = RequestStatusEnum.PENDING,
-    this.address,
-    this.trip,
   });
+  // final int numberOfPeople;
+  // final RequestStatusEnum status;
+  // final Trip? trip;
 
-  factory Request.fromJson(Map<String, dynamic> json) {
-    return Request(
-      id: json['id'],
-      areaYouRequest: json['areaYouRequest'],
-      date: json['date'],
-      departureTime: json['departureTime'],
-      isAoutbound: json['isAoutbound'],
-      returnTime: json['returnTime'],
-      isInbound: json['isInbound'],
-      numberOfPeople: json['numberOfPeople'],
-      status: RequestStatusEnumExtension.fromString(json['status']),
-      address:
-          json['address'] != null ? Address.fromJson(json['address']) : null,
-      trip: json['trip'] != null ? Trip.fromJson(json['trip']) : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'id': id,
       'areaYouRequest': areaYouRequest,
+      'workers': workers,
+      'addressId': addressId,
       'date': date,
       'departureTime': departureTime,
       'isAoutbound': isAoutbound,
       'returnTime': returnTime,
       'isInbound': isInbound,
-      'numberOfPeople': numberOfPeople,
-      'status': status.value,
-      'address': address?.toJson(),
-      'trip': trip?.toJson(),
     };
   }
 
-  Request copyWith({
-    int? id,
-    String? areaYouRequest,
-    String? date,
-    String? departureTime,
-    bool? isAoutbound,
-    String? returnTime,
-    bool? isInbound,
-    int? numberOfPeople,
-    RequestStatusEnum? status,
-    Address? address,
-    Trip? trip,
-  }) {
+  factory Request.fromMap(Map<String, dynamic> map) {
     return Request(
-      id: id ?? this.id,
-      areaYouRequest: areaYouRequest ?? this.areaYouRequest,
-      date: date ?? this.date,
-      departureTime: departureTime ?? this.departureTime,
-      isAoutbound: isAoutbound ?? this.isAoutbound,
-      returnTime: returnTime ?? this.returnTime,
-      isInbound: isInbound ?? this.isInbound,
-      numberOfPeople: numberOfPeople ?? this.numberOfPeople,
-      status: status ?? this.status,
-      address: address ?? this.address,
-      trip: trip ?? this.trip,
+      id: map['id'] != null ? map['id'] as int : null,
+      areaYouRequest:
+          map['areaYouRequest'] == null
+              ? null
+              : map['areaYouRequest'] as String,
+      workers: map['workers'] == null ? null : map['workers'] as String,
+      addressId: map['addressId'] != null ? map['addressId'] as String : null,
+      date: map['date'] as String,
+      departureTime:
+          map['departureTime'] != null ? map['departureTime'] as String : null,
+      isAoutbound:
+          map['isAoutbound'] != null ? map['isAoutbound'] as bool : null,
+      returnTime:
+          map['returnTime'] != null ? map['returnTime'] as String : null,
+      isInbound: map['isInbound'] != null ? map['isInbound'] as bool : null,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Request.fromJson(String source) =>
+      Request.fromMap(json.decode(source) as Map<String, dynamic>);
 }
