@@ -95,14 +95,7 @@ final routerProvider = StateProvider<GoRouter>((ref) {
               child: const SingUpPage(),
             ),
       ),
-      GoRoute(
-        path: RouterPath.NotificationsPage,
-        pageBuilder:
-            (context, state) => RouterTransition.fadeTransitionPage(
-              key: state.pageKey,
-              child: const NotificationsPage(),
-            ),
-      ),
+      
     ],
   );
 });

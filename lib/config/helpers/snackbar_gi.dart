@@ -101,47 +101,4 @@ class SnackBarGI {
       ..showSnackBar(snackbar);
   }
 
-  // static void showWithLottie(
-  //   BuildContext context, {
-  //   required LottiePath lottiePath,
-  //   required String text,
-  //   SnackBarAction? action,
-  //   Duration duration = const Duration(milliseconds: 4000),
-  // }) {
-  //   if (text.isEmpty) return;
-  //   final color = Theme.of(context).colorScheme;
-  //   final snackbar = SnackBar(
-  //     content: FadeInUp(
-  //       child: CustomCard(
-  //         color: color.secondary,
-  //         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-  //         child: Row(
-  //           mainAxisAlignment: MainAxisAlignment.start,
-  //           children: [
-  //             Lottie.asset(lottiePath.path,
-  //                 height: 60, width: 60, fit: BoxFit.fill, repeat: false),
-  //             const SizedBox(width: 10),
-  //             Flexible(
-  //               child: Text(text,
-  //                   style: Theme.of(context)
-  //                       .textTheme
-  //                       .bodyMedium!
-  //                       .copyWith(color: color.onSecondary)),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //     action: action,
-  //     duration: duration,
-  //     padding: const EdgeInsets.all(0),
-  //     elevation: 0,
-  //     dismissDirection: DismissDirection.horizontal,
-  //     backgroundColor: Colors.transparent,
-  //     // backgroundColor: color.secondary,
-  //   );
-  //   ScaffoldMessenger.of(context)
-  //     ..clearSnackBars()
-  //     ..showSnackBar(snackbar);
-  // }
 }

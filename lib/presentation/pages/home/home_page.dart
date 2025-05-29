@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:transporte_uci_checking/config/extensions/custom_context.dart';
 import 'package:transporte_uci_checking/presentation/views/history_screen.dart';
 import 'package:transporte_uci_checking/presentation/views/my_trips_screen.dart';
 import 'package:transporte_uci_checking/presentation/views/settings_screen.dart';
@@ -33,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: context.primary,
+        selectedItemColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
