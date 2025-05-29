@@ -28,7 +28,12 @@ class MyTripsScreen extends ConsumerWidget {
 
           // Convertir el mapa a una lista de entradas para el ListView
           final dateEntries = tripsByDate.entries.toList();
-
+          dateEntries.sort((a, b) => a.key.compareTo(b.key));
+          dateEntries.removeWhere(
+            (test) => DateTime.fromMillisecondsSinceEpoch(
+              int.parse(test.key),
+            ).isBefore(DateTime.now().subtract(const Duration(days: 1))),
+          );
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: dateEntries.length,
@@ -45,7 +50,7 @@ class MyTripsScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                     child: Text(
-                      "${date.day}/${date.month}/${date.year}",
+                      "${(date.day == DateTime.now().day) ? 'Hoy\n' : ''}${date.day}/${date.month}/${date.year}",
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -131,7 +136,6 @@ class MyTripsScreen extends ConsumerWidget {
             secondText: 'No se pudo cargar los viajes',
           );
           return null;
-       
         },
       ),
     );

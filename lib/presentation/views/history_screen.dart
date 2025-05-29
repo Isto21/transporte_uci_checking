@@ -24,10 +24,16 @@ class HistoryScreen extends ConsumerWidget {
             }
             tripsByDate[trip.date]!.add(trip);
           }
+          tripsByDate.entries.toList().sort((a, b) => a.key.compareTo(b.key));
+          tripsByDate.removeWhere(
+            (test, listtrips) => DateTime.fromMillisecondsSinceEpoch(
+              int.parse(test),
+            ).isAfter(DateTime.now().subtract(const Duration(days: 1))),
+          );
 
           // Convertir el mapa a una lista plana para el ListView
           final List<Widget> listItems = [];
-
+          //organizar por fecha
           tripsByDate.forEach((date, dateTrips) {
             // Añadir el encabezado de fecha
             listItems.add(
