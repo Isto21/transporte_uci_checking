@@ -16,31 +16,6 @@ class AccountregisterFormNotifier extends StateNotifier<RegisterStatus> {
   AccountregisterFormNotifier(this._authRemoteRepository)
     : super(RegisterStatus());
 
-  // (ClientUser, User) onSubmit() {
-  //   state = state.copyWith(
-  //       password: state.password,
-  //       phone: state.phone,
-  //       email: state.email,
-  //       name: state.name,
-  //       userName: state.userName,
-  //       fatherName: state.fatherName,
-  //       motherName: state.motherName,
-  //       isValid: validate());
-
-  //   state = state.copyWith(isValid: false);
-  //   return (
-  //     ClientUser(),
-  //     User(
-  //       familyName: "${state.fatherName.value}" "${state.motherName.value}",
-  //       cellphone: state.phone.value,
-  //       name: state.name.value,
-  //       username: state.userName.value,
-  //       email: state.email.value,
-  //       password: state.password.value,
-  //     )
-  //   );
-  // }
-
   void onMotherNameChange(String value) {
     final motherName = Name.dirty(value.trim());
     state = state.copyWith(motherName: motherName, isValid: validate());
@@ -61,47 +36,13 @@ class AccountregisterFormNotifier extends StateNotifier<RegisterStatus> {
     state = state.copyWith(phone: phone, isValid: validate());
   }
 
-  void onEmailChange(String value) {
-    final email = Email.dirty(value.trim());
-    state = state.copyWith(email: email, isValid: validate());
-    if (email.isValid) onEmailValidation(value.trim());
-  }
-
   void onNameChange(String value) {
     final name = Name.dirty(value.trim());
     state = state.copyWith(name: name, isValid: validate());
   }
 
-  Future<void> onUsernameChange(String value) async {
-    final name = Username.dirty(value.trim());
-    state = state.copyWith(userName: name, isValid: validate());
-    if (name.isValid) onUsernameValidation(value.trim());
-  }
-
   void obscureText() {
     state = state.copyWith(isObscure: !state.isObscure);
-  }
-
-  Future<void> onUsernameValidation(String value) async {
-    // try {
-    //   state = state.copyWith(usernameIsValidating: true);
-    //   final isValid = await _authRemoteRepository.validateUsername(value);
-    //   state =
-    //       state.copyWith(usernameIsValid: isValid, usernameIsValidating: false);
-    // } catch (e) {
-    //   state =
-    //       state.copyWith(usernameIsValid: false, usernameIsValidating: false);
-    // }
-  }
-
-  Future<void> onEmailValidation(String value) async {
-    // try {
-    //   state = state.copyWith(emailIsValidating: true);
-    //   final isValid = await _authRemoteRepository.validateEmail(value);
-    //   state = state.copyWith(emailIsValid: isValid, emailIsValidating: false);
-    // } catch (e) {
-    //   state = state.copyWith(emailIsValid: false, emailIsValidating: false);
-    // }
   }
 
   void closeValidation() =>

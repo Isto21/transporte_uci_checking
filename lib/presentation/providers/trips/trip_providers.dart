@@ -3,6 +3,7 @@ import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/domain/repositories/remote/usecases/trip_remote_repository.dart';
 import 'package:transporte_uci_checking/domain/repositories/remote/usecases/user_remote_repository.dart';
 import 'package:transporte_uci_checking/presentation/providers/data/api_provider.riverpod.dart';
+import 'package:transporte_uci_checking/presentation/providers/data/local_data_provider.riverpod.dart';
 
 // Provider para el servicio API
 final apiServiceProvider = Provider<TripRemoteRepository>((ref) {
@@ -23,8 +24,15 @@ final tripProvider = Provider<TripRemoteRepository>((ref) {
 
 // Provider para obtener viajes históricos
 final historicalTripsProvider = FutureProvider<List<TripEntity>>((ref) async {
-  final apiService = ref.watch(apiServiceProvider);
-  return await apiService.getAll();
+  final localDatabase = ref.read(localDatabaseProvider);
+  try {
+    final apiService = ref.watch(apiServiceProvider);
+    final List<TripEntity> trips = await apiService.getAll();
+    await localDatabase.saveAll(trips);
+    return trips;
+  } catch (e) {
+    return localDatabase.getAll();
+  }
 });
 
 // Provider para agrupar viajes por fecha

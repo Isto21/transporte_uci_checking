@@ -1,20 +1,42 @@
-import 'package:transporte_uci_checking/data/shared_preferences/constants_shared_prefs.dart';
-import 'package:transporte_uci_checking/data/shared_preferences/shared_prefs.dart';
+import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/domain/repositories/local/local_repository.dart';
 
-class Database extends LocalRepository {
-  static Database? _instance;
-  // Avoid self instance
-  Database._();
-  static Database get instance => _instance ??= Database._();
+class IsarService extends LocalIsarRepository {
+  late Future<Isar> _db;
 
-  @override
-  void saveLanguage(String language) {
-    Prefs.instance.saveValue(ConstantsSharedPrefs.language, language);
+  IsarService() {
+    _db = openDB();
+  }
+
+  Future<Isar> openDB() async {
+    if (Isar.instanceNames.isEmpty) {
+      final dr = await getApplicationDocumentsDirectory();
+      return await Isar.open(
+        [TripEntitySchema],
+        directory: dr.path,
+        inspector: true,
+      );
+    }
+    return Future.value(Isar.getInstance());
   }
 
   @override
-  String getLanguage() {
-    return Prefs.instance.getValue(ConstantsSharedPrefs.language);
+  Future<void> deleteTrip(int tripId) async {
+    final isar = await _db;
+    await isar.tripEntitys.delete(tripId);
+  }
+
+  @override
+  Future<List<TripEntity>> getAll() async {
+    final isar = await _db;
+    return await isar.tripEntitys.where().findAll();
+  }
+
+  @override
+  Future<void> saveAll(List<TripEntity> trips) async {
+    final isar = await _db;
+    await isar.tripEntitys.putAll(trips);
   }
 }

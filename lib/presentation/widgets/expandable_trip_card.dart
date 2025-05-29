@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transporte_uci_checking/config/constants/consts.dart';
 import 'package:transporte_uci_checking/domain/entities/trip.dart';
+import 'package:transporte_uci_checking/presentation/providers/data/local_data_provider.riverpod.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/passenger_providers.dart';
 
 class ExpandableTripCard extends ConsumerWidget {
@@ -16,37 +17,58 @@ class ExpandableTripCard extends ConsumerWidget {
     if (passengersAsync.isLoading) {
       return const Center(child: CircularProgressIndicator());
     } else {
-      return Card(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        child: ExpansionTile(
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          childrenPadding: const EdgeInsets.all(16),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      return Dismissible(
+        key: Key(trip.id!.toString()),
+        background: Container(
+          color: Colors.red,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: const Icon(Icons.delete),
+        ),
+        secondaryBackground: Container(
+          color: Colors.red,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: const Icon(Icons.delete),
+        ),
+        onDismissed: (direction) {
+          ref.read(localDatabaseProvider).deleteTrip(trip.id!);
+        },
+        child: Card(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            childrenPadding: const EdgeInsets.all(16),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${passengersAsync.passengers?.length} Pasajeros',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: ApkConstants.primaryApkColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Hora: ${trip.departureTime}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: ApkConstants.primaryApkColor,
+                  ),
+                ),
+              ],
+            ),
             children: [
-              Text(
-                '${passengersAsync.passengers?.length} Pasajeros',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: ApkConstants.primaryApkColor,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Hora: ${trip.departureTime}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: ApkConstants.primaryApkColor,
-                ),
-              ),
+              buildTripDetails(),
+              const SizedBox(height: 16),
+              buildPassengersList(ref, context),
             ],
           ),
-          children: [
-            buildTripDetails(),
-            const SizedBox(height: 16),
-            buildPassengersList(ref, context),
-          ],
         ),
       );
     }

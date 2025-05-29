@@ -16,8 +16,6 @@ class VerificationCodeNotifier extends StateNotifier<String> {
 
   Future<String> onSubmit() async {
     try {
-      // final String username =
-      // Prefs.instance.getValue(ConstantsSharedPrefs.username);
       final String email = Prefs.instance.getValue(ConstantsSharedPrefs.email);
       await _accountNotifier.login(
         usernameOrEmail:
@@ -35,13 +33,10 @@ class VerificationCodeNotifier extends StateNotifier<String> {
   void clearPrefs() {
     Prefs.instance.saveValue(ConstantsSharedPrefs.email, '');
     Prefs.instance.saveValue(ConstantsSharedPrefs.password, '');
-    // Prefs.instance.saveValue(ConstantsSharedPrefs.username, '');
   }
 
   Future<bool> resendVerificationEmail(String email) async {
     try {
-      // await _accountNotifier.accountRemoteRepository
-      //     .resendVerificationEmail(email: email);
       return true;
     } on CustomDioError catch (_) {
       return false;
@@ -50,8 +45,6 @@ class VerificationCodeNotifier extends StateNotifier<String> {
 
   Future<bool> sendRecoveryPasswordEmail(String email) async {
     try {
-      // await _accountNotifier.accountRemoteRepository
-      //     .sendRecoveryPasswordEmail(email: email);
       return true;
     } on CustomDioError catch (_) {
       return false;
@@ -64,10 +57,7 @@ class VerificationCodeNotifier extends StateNotifier<String> {
         ConstantsSharedPrefs.username,
       );
       final String email = Prefs.instance.getValue(ConstantsSharedPrefs.email);
-      // await _accountNotifier.accountRemoteRepository.verificationCode(
-      //     username: (username.isNotEmpty) ? username : null,
-      //     email: (email.isNotEmpty) ? email : null,
-      //     verification_code: verificationCode);
+
       return ErrorsConsts.ok;
     } on CustomDioError catch (e) {
       return e.code.toString();

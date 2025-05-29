@@ -1,8 +1,12 @@
 import 'dart:convert';
 
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:isar/isar.dart';
 
+part 'request.g.dart';
+
+@embedded
 class RequestEntity {
+  // final Id isarId = Isar.autoIncrement;
   final int? id;
   final String? areaYouRequest;
   final String? workers;
@@ -14,10 +18,10 @@ class RequestEntity {
   final bool? isInbound;
   RequestEntity({
     this.id,
-    required this.areaYouRequest,
-    required this.workers,
+    this.areaYouRequest,
+    this.workers,
     this.addressId,
-    required this.date,
+    this.date,
     this.departureTime,
     this.isAoutbound,
     this.returnTime,

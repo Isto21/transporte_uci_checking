@@ -25,27 +25,6 @@ class AccountNotifier extends StateNotifier<AccountStatus> {
   AccountNotifier({required this.accountRemoteRepository, required this.router})
     : super(AccountStatus());
 
-  // Future<void> _verifyToken() async {
-  //   final accessToken =
-  //       Prefs.instance.getValue(ConstantsSharedPrefs.accessToken);
-  //   if (accessToken.isNotEmpty ||
-  //       Prefs.instance.getValue(ConstantsSharedPrefs.mark) ==
-  //           ApkConstants.isLogged) {
-  //     // state = state.copyWith(isVerifyToken: true);
-  //     try {
-  //       await _mustRefreshToken();
-  //       return;
-  //     } on CustomDioError catch (e) {
-  //       if (e.code == int.parse(ErrorsConsts.expired_token)) {
-  //         await logout();
-  //       }
-  //     } catch (e) {
-  //       rethrow;
-  //     }
-  //     state = state.copyWith(isVerifyToken: false);
-  //   }
-  // }
-
   Future<String> login({
     required String usernameOrEmail,
     required String password,
