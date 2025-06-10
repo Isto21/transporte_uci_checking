@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:transporte_uci_checking/config/utils/date_utils.dart';
 import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/trip_providers.dart';
 import 'package:transporte_uci_checking/presentation/widgets/expandable_trip_card.dart';
@@ -18,23 +19,42 @@ class HistoryScreen extends ConsumerWidget {
         data: (trips) {
           // Agrupar viajes por fecha
           final Map<String, List<TripEntity>> tripsByDate = {};
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+
           for (final trip in trips) {
-            if (!tripsByDate.containsKey(trip.date)) {
-              tripsByDate[trip.date!] = [];
+            final tripDate = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(trip.date!),
+            );
+            final tripDateTime = DateTime(
+              tripDate.year,
+              tripDate.month,
+              tripDate.day,
+            );
+
+            // Incluir viajes de hoy y anteriores
+            if (!tripDateTime.isAfter(today)) {
+              if (!tripsByDate.containsKey(trip.date)) {
+                tripsByDate[trip.date!] = [];
+              }
+              tripsByDate[trip.date]!.add(trip);
             }
-            tripsByDate[trip.date]!.add(trip);
           }
-          tripsByDate.entries.toList().sort((a, b) => a.key.compareTo(b.key));
-          tripsByDate.removeWhere(
-            (test, listtrips) => DateTime.fromMillisecondsSinceEpoch(
-              int.parse(test),
-            ).isAfter(DateTime.now().subtract(const Duration(days: 1))),
-          );
+
+          // Ordenar las fechas
+          final dateEntries = tripsByDate.entries.toList();
+          dateEntries.sort(
+            (a, b) => b.key.compareTo(a.key),
+          ); // Orden descendente
 
           // Convertir el mapa a una lista plana para el ListView
           final List<Widget> listItems = [];
-          //organizar por fecha
-          tripsByDate.forEach((date, dateTrips) {
+
+          // Organizar por fecha
+          for (final dateEntry in dateEntries) {
+            final date = dateEntry.key;
+            final dateTrips = dateEntry.value;
+
             // Añadir el encabezado de fecha
             listItems.add(
               Padding(
@@ -45,7 +65,7 @@ class HistoryScreen extends ConsumerWidget {
                   right: 16.0,
                 ),
                 child: Text(
-                  "${DateTime.fromMillisecondsSinceEpoch(int.parse(date)).day}/${DateTime.fromMillisecondsSinceEpoch(int.parse(date)).month}/${DateTime.fromMillisecondsSinceEpoch(int.parse(date)).year}",
+                  AppDateUtils.formatDate(date),
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -66,7 +86,7 @@ class HistoryScreen extends ConsumerWidget {
                 ),
               );
             }
-          });
+          }
 
           return ListView(children: listItems);
         },

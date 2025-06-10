@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:transporte_uci_checking/config/constants/consts.dart';
+import 'package:transporte_uci_checking/config/utils/date_utils.dart';
 import 'package:transporte_uci_checking/domain/entities/trip.dart';
 
 class TripGridCard extends StatelessWidget {
@@ -20,7 +21,7 @@ class TripGridCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            '18 Pasajeros', // En un caso real, esto vendría del conteo de pasajeros en trip.requests
+            '${((trip.requests?.isEmpty ?? false) ? 5 : trip.requests?.length)} Pasajeros', // En un caso real, esto vendría del conteo de pasajeros en trip.requests
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -29,7 +30,7 @@ class TripGridCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Hora: ${trip.departureTime}',
+            'Hora: ${AppDateUtils.formatTime(trip.departureTime)} - ${AppDateUtils.formatTime(trip.returnTime)}',
             style: const TextStyle(
               fontSize: 14,
               color: ApkConstants.primaryApkColor,

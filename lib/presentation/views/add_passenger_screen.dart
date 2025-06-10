@@ -147,7 +147,7 @@ class _AddPassengerScreenState extends ConsumerState<AddPassengerScreen> {
                   prefixIcon: Icon(Icons.location_city_outlined),
                 ),
                 items:
-                    ['CIGED', 'CISOL', 'CIGE', 'FORTES', 'VERTEX', 'CESIM'].map(
+                    ['CIGED', 'CISOL', 'CIGE', 'FORTES', 'VERTEX', 'CESIM',"Otros"].map(
                       (gender) {
                         return DropdownMenuItem(
                           value: gender,

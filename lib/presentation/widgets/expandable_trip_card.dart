@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transporte_uci_checking/config/constants/consts.dart';
+import 'package:transporte_uci_checking/config/utils/date_utils.dart';
 import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/presentation/providers/data/local_data_provider.riverpod.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/passenger_providers.dart';
@@ -16,66 +17,53 @@ class ExpandableTripCard extends ConsumerWidget {
     final passengersAsync = ref.watch(passnegerProvider);
     if (passengersAsync.isLoading) {
       return const Center(child: CircularProgressIndicator());
-    } else {
-      return Dismissible(
-        key: Key(trip.id!.toString()),
-        background: Container(
-          color: Colors.red,
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: const Icon(Icons.delete),
-        ),
-        secondaryBackground: Container(
-          color: Colors.red,
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: const Icon(Icons.delete),
-        ),
-        onDismissed: (direction) {
-          ref.read(localDatabaseProvider).deleteTrip(trip.id!);
-        },
-        child: Card(
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          child: ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            childrenPadding: const EdgeInsets.all(16),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${passengersAsync.passengers?.length} Pasajeros',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: ApkConstants.primaryApkColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Hora: ${trip.departureTime}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: ApkConstants.primaryApkColor,
-                  ),
-                ),
-              ],
-            ),
+    }
+
+    return Dismissible(
+      key: Key(trip.id!.toString()),
+      background: Container(
+        color: Colors.red,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: const Icon(Icons.delete),
+      ),
+      secondaryBackground: Container(
+        color: Colors.red,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: const Icon(Icons.delete),
+      ),
+      onDismissed: (direction) {
+        ref.read(localDatabaseProvider).deleteTrip(trip.id!);
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          childrenPadding: const EdgeInsets.all(16),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildTripDetails(),
-              const SizedBox(height: 16),
-              buildPassengersList(ref, context),
+              Text(
+                'Hora: ${AppDateUtils.formatTime(trip.departureTime)}- ${AppDateUtils.formatTime(trip.returnTime)}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: ApkConstants.primaryApkColor,
+                ),
+              ),
             ],
           ),
+          children: [
+            buildTripDetails(),
+            const SizedBox(height: 16),
+            buildPassengersList(ref, context),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
 
   Widget buildTripDetails() {
-    final date = DateTime.fromMillisecondsSinceEpoch(int.parse(trip.date!));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -84,17 +72,18 @@ class ExpandableTripCard extends ConsumerWidget {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        buildDetailRow('Fecha:', "${date.day}/${date.month}/${date.year}"),
-        buildDetailRow('Hora de salida:', trip.departureTime ?? 'Indefinida'),
-        buildDetailRow('Hora de regreso:', trip.returnTime ?? 'Indefinida'),
-        // _buildDetailRow('Estado:', trip.),
+        buildDetailRow('Fecha:', AppDateUtils.formatDate(trip.date)),
+        buildDetailRow(
+          'Hora de salida:',
+          AppDateUtils.formatTime(trip.departureTime) ?? 'Indefinida',
+        ),
+        buildDetailRow(
+          'Hora de regreso:',
+          AppDateUtils.formatTime(trip.returnTime) ?? 'Indefinida',
+        ),
         trip.transportationId != null
-            ? buildDetailRow(
-              'Vehículo:',
-              trip.transportationId.toString() ?? 'Indefinida',
-            )
-            : SizedBox(),
-        // _buildDetailRow('Conductor:',trip. 'Juan Pérez'),
+            ? buildDetailRow('Vehículo:', trip.transportationId.toString())
+            : const SizedBox(),
       ],
     );
   }

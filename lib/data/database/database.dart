@@ -12,10 +12,10 @@ class IsarService extends LocalIsarRepository {
 
   Future<Isar> openDB() async {
     if (Isar.instanceNames.isEmpty) {
-      final dr = await getApplicationDocumentsDirectory();
+      final dir = await getApplicationDocumentsDirectory();
       return await Isar.open(
         [TripEntitySchema],
-        directory: dr.path,
+        directory: dir.path,
         inspector: true,
       );
     }
@@ -37,6 +37,8 @@ class IsarService extends LocalIsarRepository {
   @override
   Future<void> saveAll(List<TripEntity> trips) async {
     final isar = await _db;
-    await isar.tripEntitys.putAll(trips);
+    await isar.writeTxn(() async {
+      await isar.tripEntitys.putAll(trips);
+    });
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transporte_uci_checking/config/router/router.dart';
 import 'package:transporte_uci_checking/config/theme/app_theme.dart';
+import 'package:transporte_uci_checking/data/database/database.dart';
 import 'package:transporte_uci_checking/data/shared_preferences/shared_prefs.dart';
 import 'package:transporte_uci_checking/generated/l10n.dart';
 import 'package:transporte_uci_checking/l10n/l10n.dart';
@@ -10,6 +11,12 @@ import 'package:transporte_uci_checking/presentation/providers/providers.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializar Isar
+  final isarService = IsarService();
+  await isarService.openDB();
+
+  // Inicializar SharedPreferences
   await Prefs.instance.initPrefs();
 
   runApp(const ProviderScope(child: MyApp()));

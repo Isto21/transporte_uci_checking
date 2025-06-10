@@ -20,7 +20,7 @@ class TripCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '18 Pasajeros', // En un caso real, esto vendría del conteo de pasajeros en trip.requests
+                  '${trip.requests?.length ?? 19} Pasajeros', // En un caso real, esto vendría del conteo de pasajeros en trip.requests
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

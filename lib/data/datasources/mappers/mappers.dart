@@ -20,6 +20,7 @@ class Mappers {
 
   UserEnity userMapperToEntity(User user) {
     return UserEnity(
+      id: user.id,
       name: user.name,
       lastName: user.lastName,
       email: user.email,
@@ -68,6 +69,7 @@ class Mappers {
           trip.requests
               ?.map((request) => requestMapperToEntity(request))
               .toList(),
+      status: trip.status,
     );
   }
 
@@ -86,6 +88,7 @@ class Mappers {
           trip.requests
               ?.map((request) => requestMapperToModel(request))
               .toList(),
+      status: trip.status,
     );
   }
 

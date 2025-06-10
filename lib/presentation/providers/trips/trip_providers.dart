@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:transporte_uci_checking/data/datasources/models/enums/trip_status_enum.dart';
 import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/domain/repositories/remote/usecases/trip_remote_repository.dart';
 import 'package:transporte_uci_checking/domain/repositories/remote/usecases/user_remote_repository.dart';
@@ -15,7 +16,8 @@ final userApiServiceProvider = Provider<UserRemoteRepository>((ref) {
 // Provider para obtener todos los viajes
 final tripsProvider = FutureProvider<List<TripEntity>>((ref) async {
   final apiService = ref.watch(apiServiceProvider);
-  return apiService.getAll();
+  final trips = await apiService.getAll();
+  return trips.where((trip) => trip.status == TripStatusEnum.READY).toList();
 });
 
 final tripProvider = Provider<TripRemoteRepository>((ref) {
@@ -29,9 +31,10 @@ final historicalTripsProvider = FutureProvider<List<TripEntity>>((ref) async {
     final apiService = ref.watch(apiServiceProvider);
     final List<TripEntity> trips = await apiService.getAll();
     await localDatabase.saveAll(trips);
-    return trips;
+    return trips.where((trip) => trip.status == TripStatusEnum.DONE).toList();
   } catch (e) {
-    return localDatabase.getAll();
+    final trips = await localDatabase.getAll();
+    return trips.where((trip) => trip.status == TripStatusEnum.DONE).toList();
   }
 });
 

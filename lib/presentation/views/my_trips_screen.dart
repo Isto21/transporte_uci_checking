@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:transporte_uci_checking/config/utils/date_utils.dart';
+import 'package:transporte_uci_checking/data/datasources/models/enums/trip_status_enum.dart';
 import 'package:transporte_uci_checking/domain/entities/trip.dart';
 import 'package:transporte_uci_checking/presentation/providers/trips/trip_providers.dart';
 import 'package:transporte_uci_checking/presentation/views/passenger_list_screen.dart';
@@ -19,29 +21,39 @@ class MyTripsScreen extends ConsumerWidget {
         data: (trips) {
           // Agrupar viajes por fecha
           final Map<String, List<TripEntity>> tripsByDate = {};
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+
           for (final trip in trips) {
-            if (!tripsByDate.containsKey(trip.date)) {
-              tripsByDate[trip.date!] = [];
+            final tripDate = DateTime.fromMillisecondsSinceEpoch(
+              int.parse(trip.date!),
+            );
+            final tripDateTime = DateTime(
+              tripDate.year,
+              tripDate.month,
+              tripDate.day,
+            );
+
+            // Incluir viajes que son para mañana o después, o los de hoy que estén ready
+            if (tripDateTime.isAfter(today) ||
+                (tripDateTime.isAtSameMomentAs(today) &&
+                    trip.status == TripStatusEnum.READY)) {
+              if (!tripsByDate.containsKey(trip.date)) {
+                tripsByDate[trip.date!] = [];
+              }
+              tripsByDate[trip.date]!.add(trip);
             }
-            tripsByDate[trip.date]!.add(trip);
           }
 
           // Convertir el mapa a una lista de entradas para el ListView
           final dateEntries = tripsByDate.entries.toList();
           dateEntries.sort((a, b) => a.key.compareTo(b.key));
-          dateEntries.removeWhere(
-            (test) => DateTime.fromMillisecondsSinceEpoch(
-              int.parse(test.key),
-            ).isBefore(DateTime.now().subtract(const Duration(days: 1))),
-          );
+
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: dateEntries.length,
             itemBuilder: (context, dateIndex) {
               final dateEntry = dateEntries[dateIndex];
-              final date = DateTime.fromMillisecondsSinceEpoch(
-                int.parse(dateEntry.key),
-              );
               final dateTrips = dateEntry.value;
 
               return Column(
@@ -50,7 +62,7 @@ class MyTripsScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                     child: Text(
-                      "${(date.day == DateTime.now().day) ? 'Hoy\n' : ''}${date.day}/${date.month}/${date.year}",
+                      AppDateUtils.formatDate(dateEntry.key),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -117,7 +129,7 @@ class MyTripsScreen extends ConsumerWidget {
                                   ),
                                 ),
                               ] else
-                                Expanded(child: Container()),
+                                const Expanded(child: SizedBox()),
                             ],
                           ),
                       ],
@@ -130,12 +142,11 @@ class MyTripsScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) {
-          StandardErrorPage(
+          return StandardErrorPage(
             icon: Icons.error,
             firstText: 'Error',
             secondText: 'No se pudo cargar los viajes',
           );
-          return null;
         },
       ),
     );

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:transporte_uci_checking/data/datasources/models/enums/trip_status_enum.dart';
 import 'package:transporte_uci_checking/data/datasources/models/request.module.dart';
 
 class Trip {
@@ -10,6 +11,8 @@ class Trip {
   final String? departureTime;
   final String? returnTime;
   final List<Request>? requests;
+  final TripStatusEnum status;
+
   Trip({
     this.id,
     this.transportationId,
@@ -17,8 +20,8 @@ class Trip {
     this.departureTime,
     this.returnTime,
     this.requests,
+    this.status = TripStatusEnum.READY,
   });
-  // final TripStatusEnum status;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -28,6 +31,7 @@ class Trip {
       'departureTime': departureTime,
       'returnTime': returnTime,
       'requests': requests?.map((x) => x.toMap()).toList(),
+      'status': status.value,
     };
   }
 
@@ -51,6 +55,10 @@ class Trip {
                 ),
               )
               : null,
+      status:
+          map['status'] != null
+              ? TripStatusEnumExtension.fromString(map['status'] as String)
+              : TripStatusEnum.READY,
     );
   }
 

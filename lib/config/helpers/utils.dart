@@ -4,9 +4,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-Future<String> loading({
+Future<T> loading<T>({
   required BuildContext context,
-  required Future action,
+  required Future<T> action,
 }) async {
   try {
     showDialog(

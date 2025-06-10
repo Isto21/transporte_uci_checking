@@ -43,8 +43,14 @@ const TripEntitySchema = CollectionSchema(
       name: r'returnTime',
       type: IsarType.string,
     ),
-    r'transportationId': PropertySchema(
+    r'status': PropertySchema(
       id: 5,
+      name: r'status',
+      type: IsarType.byte,
+      enumMap: _TripEntitystatusEnumValueMap,
+    ),
+    r'transportationId': PropertySchema(
+      id: 6,
       name: r'transportationId',
       type: IsarType.long,
     )
@@ -120,7 +126,8 @@ void _tripEntitySerialize(
     object.requests,
   );
   writer.writeString(offsets[4], object.returnTime);
-  writer.writeLong(offsets[5], object.transportationId);
+  writer.writeByte(offsets[5], object.status.index);
+  writer.writeLong(offsets[6], object.transportationId);
 }
 
 TripEntity _tripEntityDeserialize(
@@ -140,7 +147,9 @@ TripEntity _tripEntityDeserialize(
       RequestEntity(),
     ),
     returnTime: reader.readStringOrNull(offsets[4]),
-    transportationId: reader.readLongOrNull(offsets[5]),
+    status: _TripEntitystatusValueEnumMap[reader.readByteOrNull(offsets[5])] ??
+        TripStatusEnum.READY,
+    transportationId: reader.readLongOrNull(offsets[6]),
   );
   return object;
 }
@@ -168,11 +177,23 @@ P _tripEntityDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
+      return (_TripEntitystatusValueEnumMap[reader.readByteOrNull(offset)] ??
+          TripStatusEnum.READY) as P;
+    case 6:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _TripEntitystatusEnumValueMap = {
+  'READY': 0,
+  'DONE': 1,
+};
+const _TripEntitystatusValueEnumMap = {
+  0: TripStatusEnum.READY,
+  1: TripStatusEnum.DONE,
+};
 
 Id _tripEntityGetId(TripEntity object) {
   return object.isarId;
@@ -948,6 +969,59 @@ extension TripEntityQueryFilter
     });
   }
 
+  QueryBuilder<TripEntity, TripEntity, QAfterFilterCondition> statusEqualTo(
+      TripStatusEnum value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'status',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TripEntity, TripEntity, QAfterFilterCondition> statusGreaterThan(
+    TripStatusEnum value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'status',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TripEntity, TripEntity, QAfterFilterCondition> statusLessThan(
+    TripStatusEnum value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'status',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TripEntity, TripEntity, QAfterFilterCondition> statusBetween(
+    TripStatusEnum lower,
+    TripStatusEnum upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'status',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<TripEntity, TripEntity, QAfterFilterCondition>
       transportationIdIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -1086,6 +1160,18 @@ extension TripEntityQuerySortBy
     });
   }
 
+  QueryBuilder<TripEntity, TripEntity, QAfterSortBy> sortByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TripEntity, TripEntity, QAfterSortBy> sortByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.desc);
+    });
+  }
+
   QueryBuilder<TripEntity, TripEntity, QAfterSortBy> sortByTransportationId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'transportationId', Sort.asc);
@@ -1162,6 +1248,18 @@ extension TripEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<TripEntity, TripEntity, QAfterSortBy> thenByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TripEntity, TripEntity, QAfterSortBy> thenByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.desc);
+    });
+  }
+
   QueryBuilder<TripEntity, TripEntity, QAfterSortBy> thenByTransportationId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'transportationId', Sort.asc);
@@ -1203,6 +1301,12 @@ extension TripEntityQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'returnTime', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TripEntity, TripEntity, QDistinct> distinctByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'status');
     });
   }
 
@@ -1249,6 +1353,12 @@ extension TripEntityQueryProperty
   QueryBuilder<TripEntity, String?, QQueryOperations> returnTimeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'returnTime');
+    });
+  }
+
+  QueryBuilder<TripEntity, TripStatusEnum, QQueryOperations> statusProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'status');
     });
   }
 

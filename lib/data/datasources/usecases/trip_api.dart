@@ -10,11 +10,11 @@ class TripApi extends TripRemoteRepository {
   TripApi(this._myDio);
 
   @override
-  Future checkIn(String id, List<String> passengers) async {
+  Future<bool> checkIn(String id, List<String> passengers) async {
     try {
       final json = await _myDio.request(
-        requestType: RequestType.GET,
-        path: '/trip/checkIn',
+        requestType: RequestType.POST,
+        path: '/trip/checkIn/$id',
         data: {"people": passengers},
       );
       return true;
